@@ -38,31 +38,24 @@ namespace ReporteComoCorreo
                     });
                 }
 
-                var aliasfrom = GetCampo("Nombre Remitente","Pepito");
-                var emailFrom = GetCampo("Email Remitente","pepito@mail.com");
+                var aliasfrom = GetCampo("Nombre Remitente", "Pepito");
+                var emailFrom = GetCampo("Email Remitente", "pepito@mail.com");
 
-                var aliasTo = GetCampo("Nombre Destinatario","Juanito");
+                var aliasTo = GetCampo("Nombre Destinatario", "Juanito");
                 var emailTo = GetCampo("Email Destinatario", "juanito@mail.com");
 
-                var host = GetCampo("Servidor SMTP","smtp.gmail.com");
+                var host = GetCampo("Servidor SMTP", "smtp.gmail.com");
                 var puertoSeguro = GetCampo("El Servidor SMTP usa un puerto Seguro? [S (SÍ)/N (NO)]").ToLower() == "s";
 
                 using (var viewer = new LocalReport())
                 {
-                    Warning[] warnings;
-                    string[] streamIds;
-                    string mimeType;
-                    string encoding;
-                    string filenameExtension;
-
                     Console.WriteLine("Renderizando reporte....");
                     viewer.DataSources.Add(new ReportDataSource("data", listaClientes));
                     viewer.Refresh();
                     // Para que esta línea funcione se debe escoger el archivo DemoReporte.rdlc y en las propiedades de archivo
-                    // ajustarlo a "Copiar siempre" en 'Acción de Compilación'.
+                    // ajustarlo a "Copiar siempre" en 'Copiar en el directorio de salida'.
                     viewer.ReportPath = "./Reports/DemoReporte.rdlc";
-                    var bytes = viewer.Render("PDF", null, out mimeType, out encoding, out filenameExtension,
-                        out streamIds, out warnings);
+                    var bytes = viewer.Render("PDF");
 
                     var correo = new MailMessage { From = new MailAddress(emailFrom, aliasfrom) };
 
@@ -100,7 +93,7 @@ namespace ReporteComoCorreo
 
         private static string GetCampo(string nombreCampo, string sugerencia = "")
         {
-            Console.WriteLine("Ingrese el valor para {0}{1}:", nombreCampo, string.IsNullOrEmpty(sugerencia) ? sugerencia : $" Ejm:({sugerencia})" );
+            Console.WriteLine("Ingrese el valor para {0}{1}:", nombreCampo, string.IsNullOrEmpty(sugerencia) ? sugerencia : $" Ejm:({sugerencia})");
             return Console.ReadLine();
         }
 
